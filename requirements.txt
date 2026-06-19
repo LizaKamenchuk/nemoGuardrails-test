@@ -1,0 +1,7 @@
+nemoguardrails
+fastapi
+uvicorn
+python-dotenv
+pydantic
+pytest
+httpx
