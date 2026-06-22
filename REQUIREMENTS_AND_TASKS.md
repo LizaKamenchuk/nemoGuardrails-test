@@ -1,5 +1,9 @@
 # NeMo Guardrails Pet Project Requirements And Tasks
 
+> Historical initial brief. The implemented project now extends this single-agent
+> exercise into the AI Hub architecture documented in `README.md`, including a
+> shared LLM gateway and a separate MCP-style tool authorization boundary.
+
 Source: `C:\Users\User\Downloads\Pet Project- NeMo Guardrails.pdf`
 
 ## Project Goal
