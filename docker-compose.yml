@@ -7,13 +7,15 @@ services:
       PUBLIC_LITELLM_KEY: ${PUBLIC_LITELLM_KEY}
       NEMO_SERVICE_API_KEY: ${NEMO_SERVICE_API_KEY}
       UPSTREAM_MODEL: ${UPSTREAM_MODEL}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      UPSTREAM_BASE_URL: ${UPSTREAM_BASE_URL}
+      UPSTREAM_API_KEY: ${UPSTREAM_API_KEY}
     volumes:
       - ./litellm/config.yaml:/app/config.yaml:ro
     ports:
       - "4000:4000"
     depends_on:
       - nemo-service
+      - mock-llm
     networks:
       - policy-network
 
@@ -25,9 +27,22 @@ services:
     environment:
       NEMO_SERVICE_API_KEY: ${NEMO_SERVICE_API_KEY}
       NEMO_GUARD_MODEL: ${NEMO_GUARD_MODEL}
-      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      NEMO_GUARD_BASE_URL: ${NEMO_GUARD_BASE_URL}
+      NEMO_GUARD_API_KEY: ${NEMO_GUARD_API_KEY}
     expose:
       - "8001"
+    depends_on:
+      - mock-llm
+    networks:
+      - policy-network
+
+  mock-llm:
+    build:
+      context: .
+      dockerfile: Dockerfile.mock
+    restart: unless-stopped
+    expose:
+      - "9000"
     networks:
       - policy-network
 

@@ -136,3 +136,5 @@ def test_litellm_runs_nemo_before_and_after_upstream_model() -> None:
     assert "generic_guardrail_api" in config
     assert "litellm-internal" not in compose
     assert "${NEMO_GUARD_MODEL}" not in nemo_config
+    assert "http://mock-llm:9000/v1" in nemo_config
+    assert "mock-llm:" in compose

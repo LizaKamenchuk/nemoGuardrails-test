@@ -1,8 +1,10 @@
 models:
   - type: main
     engine: openai
-    model: gpt-4o-mini
-    api_key_env_var: OPENAI_API_KEY
+    model: mock-guard
+    api_key_env_var: NEMO_GUARD_API_KEY
+    parameters:
+      base_url: http://mock-llm:9000/v1
 
 instructions:
   - type: general

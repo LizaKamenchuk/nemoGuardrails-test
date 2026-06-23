@@ -32,10 +32,13 @@ def get_rails() -> Any:
     # RailsConfig does not expand ${NEMO_GUARD_MODEL} in the YAML model field.
     # Keep a valid YAML default and apply the optional environment override here.
     guard_model = os.getenv("NEMO_GUARD_MODEL", "").strip()
+    guard_base_url = os.getenv("NEMO_GUARD_BASE_URL", "").strip()
     if guard_model:
         for model in config.models:
             if model.type == "main":
                 model.model = guard_model
+                if guard_base_url:
+                    model.parameters["base_url"] = guard_base_url
 
     return LLMRails(config)
 

@@ -2,7 +2,8 @@ model_list:
   - model_name: guarded-shop
     litellm_params:
       model: os.environ/UPSTREAM_MODEL
-      api_key: os.environ/OPENAI_API_KEY
+      api_base: os.environ/UPSTREAM_BASE_URL
+      api_key: os.environ/UPSTREAM_API_KEY
 
 litellm_settings:
   drop_params: true
