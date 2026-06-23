@@ -1,0 +1,35 @@
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    command: ["--config", "/app/config.yaml", "--host", "0.0.0.0", "--port", "4000"]
+    restart: unless-stopped
+    environment:
+      PUBLIC_LITELLM_KEY: ${PUBLIC_LITELLM_KEY}
+      NEMO_SERVICE_API_KEY: ${NEMO_SERVICE_API_KEY}
+      UPSTREAM_MODEL: ${UPSTREAM_MODEL}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    volumes:
+      - ./litellm/config.yaml:/app/config.yaml:ro
+    ports:
+      - "4000:4000"
+    depends_on:
+      - nemo-service
+    networks:
+      - policy-network
+
+  nemo-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.nemo
+    restart: unless-stopped
+    environment:
+      NEMO_SERVICE_API_KEY: ${NEMO_SERVICE_API_KEY}
+      NEMO_GUARD_MODEL: ${NEMO_GUARD_MODEL}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+    expose:
+      - "8001"
+    networks:
+      - policy-network
+
+networks:
+  policy-network:
