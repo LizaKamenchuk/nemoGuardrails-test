@@ -128,9 +128,11 @@ def test_litellm_runs_nemo_before_and_after_upstream_model() -> None:
     root = Path(__file__).resolve().parent.parent
     config = (root / "litellm" / "config.yaml").read_text()
     compose = (root / "docker-compose.yml").read_text()
+    nemo_config = (root / "config" / "config.yml").read_text()
 
     assert "mode: [pre_call, post_call]" in config
     assert "unreachable_fallback: fail_closed" in config
     assert "default_on: true" in config
     assert "generic_guardrail_api" in config
     assert "litellm-internal" not in compose
+    assert "${NEMO_GUARD_MODEL}" not in nemo_config

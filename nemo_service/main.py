@@ -1,4 +1,5 @@
 import hmac
+import logging
 import os
 from functools import lru_cache
 from pathlib import Path
@@ -7,6 +8,9 @@ from typing import Any
 from fastapi import Depends, FastAPI, Header, HTTPException, status
 
 from nemo_service.schemas import GuardrailRequest, GuardrailResponse
+
+
+log = logging.getLogger(__name__)
 
 
 app = FastAPI(
@@ -23,7 +27,17 @@ def get_rails() -> Any:
     from nemoguardrails import LLMRails, RailsConfig
 
     config_path = Path(__file__).resolve().parent.parent / "config"
-    return LLMRails(RailsConfig.from_path(str(config_path)))
+    config = RailsConfig.from_path(str(config_path))
+
+    # RailsConfig does not expand ${NEMO_GUARD_MODEL} in the YAML model field.
+    # Keep a valid YAML default and apply the optional environment override here.
+    guard_model = os.getenv("NEMO_GUARD_MODEL", "").strip()
+    if guard_model:
+        for model in config.models:
+            if model.type == "main":
+                model.model = guard_model
+
+    return LLMRails(config)
 
 
 def require_service_key(x_api_key: str | None = Header(default=None)) -> None:
@@ -82,6 +96,7 @@ async def check_content(
             else:
                 checked_texts.append(text)
     except Exception as exc:
+        log.exception("NeMo policy evaluation failed")
         raise HTTPException(
             status_code=status.HTTP_502_BAD_GATEWAY,
             detail="NeMo policy evaluation failed.",
