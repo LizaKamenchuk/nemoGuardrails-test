@@ -1,0 +1,22 @@
+model_list:
+  - model_name: guarded-shop
+    litellm_params:
+      model: os.environ/UPSTREAM_MODEL
+      api_base: os.environ/UPSTREAM_BASE_URL
+      api_key: os.environ/UPSTREAM_API_KEY
+
+litellm_settings:
+  drop_params: true
+
+guardrails:
+  - guardrail_name: nemo-policy
+    litellm_params:
+      guardrail: generic_guardrail_api
+      mode: [pre_call, post_call]
+      api_base: http://nemo-service:8001
+      api_key: os.environ/NEMO_SERVICE_API_KEY
+      unreachable_fallback: fail_closed
+      default_on: true
+
+general_settings:
+  master_key: os.environ/PUBLIC_LITELLM_KEY
